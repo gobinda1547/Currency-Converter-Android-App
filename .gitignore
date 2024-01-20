@@ -31,3 +31,6 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# confidential keys like app id for the server
+/app/src/main/res/values/confidential.xml
