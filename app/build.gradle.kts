@@ -62,13 +62,18 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
 
-    val hiltVersion = "2.48"
-    implementation("com.google.dagger:hilt-android:$hiltVersion")
-    kapt("com.google.dagger:hilt-compiler:$hiltVersion")
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-compiler:2.48")
 
-    val retrofitVersion = "2.9.0"
-    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
-    implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+
+    // navigation in compose with hilt dependency injection
+    implementation("androidx.navigation:navigation-compose:2.7.6")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("io.mockk:mockk:1.12.0")

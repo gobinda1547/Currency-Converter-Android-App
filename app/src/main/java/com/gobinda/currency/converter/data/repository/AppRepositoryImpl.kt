@@ -30,37 +30,44 @@ class AppRepositoryImpl @Inject constructor(
         withContext(Dispatchers.IO) {
             _requestStatus.tryEmit(RequestStatus.Started)
 
+            var successfulResponseCounter = 0
             val appIdForServer = context.getString(R.string.APP_ID_OPEN_EXCHANGE_SERVER)
             val queryMap = mapOf("app_id" to appIdForServer)
 
-            val currencyDef = async { openExchangeApi.getCurrencies(queryMap) }
-            val exchangeRateDef = async { openExchangeApi.getExchangeRate(queryMap) }
-
-            val currenciesResult = currencyDef.await()
-            val exchangeRateResult = exchangeRateDef.await()
-
-            var successfulQueryCounter = 0
-
-            if (currenciesResult.isSuccessful) {
-                currenciesResult.body()?.let {
-                    _currencies.tryEmit(it)
-                    successfulQueryCounter++
+            val currencyDeferred = async {
+                try {
+                    val currencyResponse = openExchangeApi.getCurrencies(queryMap)
+                    if (currencyResponse.isSuccessful) {
+                        currencyResponse.body()?.let { currencyValue ->
+                            _currencies.tryEmit(currencyValue)
+                            successfulResponseCounter++
+                        }
+                    }
+                } catch (ignore: Exception) {
+                }
+            }
+            val exchangeRateDeferred = async {
+                try {
+                    val exchangeRateResponse = openExchangeApi.getExchangeRate(queryMap)
+                    if (exchangeRateResponse.isSuccessful) {
+                        exchangeRateResponse.body()?.let { exchangeRateValue ->
+                            _exchangeRate.tryEmit(exchangeRateValue.rates)
+                            successfulResponseCounter++
+                        }
+                    }
+                } catch (ignore: Exception) {
                 }
             }
 
-            if (exchangeRateResult.isSuccessful) {
-                exchangeRateResult.body()?.let {
-                    _exchangeRate.tryEmit(it.rates)
-                    println(it.rates)
-                    successfulQueryCounter++
-                }
-            }
+            currencyDeferred.await()
+            exchangeRateDeferred.await()
 
-            when (successfulQueryCounter == 2) {
-                true -> _requestStatus.tryEmit(RequestStatus.Successful)
-                else -> _requestStatus.tryEmit(RequestStatus.Failed)
-            }
+            _requestStatus.emit(
+                when (successfulResponseCounter == 2) {
+                    true -> RequestStatus.Successful
+                    else -> RequestStatus.Failed
+                }
+            )
         }
     }
-
 }
