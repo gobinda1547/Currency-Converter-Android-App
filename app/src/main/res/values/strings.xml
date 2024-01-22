@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Currency Converter</string>
+    <string name="text_fetching_exchange_rate">Fetching exchange rate</string>
+    <string name="text_exchange_rate_fetch_problem">Server error</string>
+    <string name="text_exchange_rate_fetch_success">Fetched successfully</string>
 </resources>
