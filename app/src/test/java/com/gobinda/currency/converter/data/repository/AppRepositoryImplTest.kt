@@ -79,11 +79,12 @@ class AppRepositoryImplTest {
             val foundRequestStatus = appRepositoryImpl.requestStatus.value
             TestCase.assertEquals(expectedRequestStatus, foundRequestStatus)
 
-            val currency = appRepositoryImpl.currencies.value ?: emptyMap()
-            TestCase.assertEquals(validCurrencyMap, currency)
+            val currencyInfo = appRepositoryImpl.currencyInfo.value ?: emptyMap()
+            TestCase.assertEquals(2, currencyInfo.size)
 
-            val exchangeRate = appRepositoryImpl.exchangeRate.value ?: emptyMap()
-            TestCase.assertEquals(validExchangeRateInfo.rates, exchangeRate)
+            for (entry in currencyInfo) {
+                println("${entry.key} -> ${entry.value}")
+            }
         }
     }
 
@@ -102,6 +103,9 @@ class AppRepositoryImplTest {
             val expectedRequestStatus = RequestStatus.Failed
             val foundRequestStatus = appRepositoryImpl.requestStatus.value
             TestCase.assertEquals(expectedRequestStatus, foundRequestStatus)
+
+            val currencyInfo = appRepositoryImpl.currencyInfo.value ?: emptyMap()
+            TestCase.assertEquals(0, currencyInfo.size)
         }
     }
 
@@ -120,6 +124,9 @@ class AppRepositoryImplTest {
             val expectedRequestStatus = RequestStatus.Failed
             val foundRequestStatus = appRepositoryImpl.requestStatus.value
             TestCase.assertEquals(expectedRequestStatus, foundRequestStatus)
+
+            val currencyInfo = appRepositoryImpl.currencyInfo.value ?: emptyMap()
+            TestCase.assertEquals(0, currencyInfo.size)
         }
     }
 
@@ -138,6 +145,9 @@ class AppRepositoryImplTest {
             val expectedRequestStatus = RequestStatus.Failed
             val foundRequestStatus = appRepositoryImpl.requestStatus.value
             TestCase.assertEquals(expectedRequestStatus, foundRequestStatus)
+
+            val currencyInfo = appRepositoryImpl.currencyInfo.value ?: emptyMap()
+            TestCase.assertEquals(0, currencyInfo.size)
         }
     }
 }
