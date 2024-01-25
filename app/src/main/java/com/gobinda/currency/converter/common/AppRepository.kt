@@ -1,15 +1,30 @@
 package com.gobinda.currency.converter.common
 
+import com.gobinda.currency.converter.data.model.CurrencyInfo
 import com.gobinda.currency.converter.data.repository.RequestStatus
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.withContext
 
 interface AppRepository {
 
-    val currencies: StateFlow<Map<String, String>?>
-
-    val exchangeRate: StateFlow<Map<String, Double>?>
+    val currencyInfo: StateFlow<Map<String, CurrencyInfo>?>
 
     val requestStatus: StateFlow<RequestStatus>
 
     suspend fun requestForLatestData()
+
+    suspend fun <T> asyncSafeCall(executeMe: suspend () -> T): Deferred<T?> {
+        return withContext(Dispatchers.IO) {
+            async {
+                try {
+                    executeMe()
+                } catch (e: Exception) {
+                    null
+                }
+            }
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.gobinda.currency.converter.ui.screen
 
+import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
@@ -25,6 +26,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.gobinda.currency.converter.R
 import com.gobinda.currency.converter.data.repository.RequestStatus
+import com.gobinda.currency.converter.ui.navigation.AppScreen
+
+private const val TAG = "LoadingScreen"
 
 @Composable
 fun LoadingScreen(
@@ -33,6 +37,13 @@ fun LoadingScreen(
 ) {
 
     val requestStatus = viewModel.loadingStatus.collectAsState()
+
+    LaunchedEffect(key1 = requestStatus.value) {
+        Log.d(TAG, "LoadingScreen: invoked launched effect for ${requestStatus.value}")
+        if (requestStatus.value == RequestStatus.Successful) {
+            navController?.navigate(route = AppScreen.CurrencyListScreen.route)
+        }
+    }
 
     Box(modifier = Modifier.wrapContentSize()) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

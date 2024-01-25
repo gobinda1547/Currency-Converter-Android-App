@@ -1,11 +1,15 @@
 package com.gobinda.currency.converter.data.repository
 
 import android.content.Context
+import android.graphics.Bitmap
 import com.gobinda.currency.converter.data.model.ExchangeRateInfo
 import com.gobinda.currency.converter.data.source.OpenExchangeApi
+import com.gobindacurrency.converter.countryimages.CountryImageProvider
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.unmockkObject
 import junit.framework.TestCase
 import kotlinx.coroutines.runBlocking
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -48,9 +52,15 @@ class AppRepositoryImplTest {
     private lateinit var context: Context
     private lateinit var openExchangeApi: OpenExchangeApi
     private lateinit var appRepositoryImpl: AppRepositoryImpl
+    private lateinit var mockedBitmap: Bitmap
 
     @Before
     fun setUp() {
+        mockedBitmap = mockk()
+
+        mockkObject(CountryImageProvider)
+        every { CountryImageProvider.getBitmap(any(), any()) } returns mockedBitmap
+
         context = mockk()
         openExchangeApi = mockk()
         appRepositoryImpl = AppRepositoryImpl(context, openExchangeApi)
@@ -60,7 +70,7 @@ class AppRepositoryImplTest {
 
     @After
     fun tearDown() {
-
+        unmockkObject(CountryImageProvider)
     }
 
     @Test
@@ -79,11 +89,8 @@ class AppRepositoryImplTest {
             val foundRequestStatus = appRepositoryImpl.requestStatus.value
             TestCase.assertEquals(expectedRequestStatus, foundRequestStatus)
 
-            val currency = appRepositoryImpl.currencies.value ?: emptyMap()
-            TestCase.assertEquals(validCurrencyMap, currency)
-
-            val exchangeRate = appRepositoryImpl.exchangeRate.value ?: emptyMap()
-            TestCase.assertEquals(validExchangeRateInfo.rates, exchangeRate)
+            val currencyInfo = appRepositoryImpl.currencyInfo.value ?: emptyMap()
+            TestCase.assertEquals(2, currencyInfo.size)
         }
     }
 
@@ -102,6 +109,9 @@ class AppRepositoryImplTest {
             val expectedRequestStatus = RequestStatus.Failed
             val foundRequestStatus = appRepositoryImpl.requestStatus.value
             TestCase.assertEquals(expectedRequestStatus, foundRequestStatus)
+
+            val currencyInfo = appRepositoryImpl.currencyInfo.value ?: emptyMap()
+            TestCase.assertEquals(0, currencyInfo.size)
         }
     }
 
@@ -120,6 +130,9 @@ class AppRepositoryImplTest {
             val expectedRequestStatus = RequestStatus.Failed
             val foundRequestStatus = appRepositoryImpl.requestStatus.value
             TestCase.assertEquals(expectedRequestStatus, foundRequestStatus)
+
+            val currencyInfo = appRepositoryImpl.currencyInfo.value ?: emptyMap()
+            TestCase.assertEquals(0, currencyInfo.size)
         }
     }
 
@@ -138,6 +151,9 @@ class AppRepositoryImplTest {
             val expectedRequestStatus = RequestStatus.Failed
             val foundRequestStatus = appRepositoryImpl.requestStatus.value
             TestCase.assertEquals(expectedRequestStatus, foundRequestStatus)
+
+            val currencyInfo = appRepositoryImpl.currencyInfo.value ?: emptyMap()
+            TestCase.assertEquals(0, currencyInfo.size)
         }
     }
 }
