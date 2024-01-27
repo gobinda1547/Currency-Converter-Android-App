@@ -10,15 +10,11 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val SingleColorScheme = lightColorScheme(
-    primary = appTextColor100,
-    onPrimary = appBackgroundColor100,
-    background = appBackgroundColor100,
+    background = lightBackgroundColor100,
     onBackground = appTextColor100,
-    surface = appBackgroundColor100,
+    surface = darkBackgroundColor100,
     onSurface = appTextColor100,
-    surfaceVariant = itemBackgroundColor100,
-    onSurfaceVariant = appTextColor100,
-    outlineVariant = itemBackgroundColor50,
+    outlineVariant = lightBackgroundColor50,
 )
 
 @Composable
