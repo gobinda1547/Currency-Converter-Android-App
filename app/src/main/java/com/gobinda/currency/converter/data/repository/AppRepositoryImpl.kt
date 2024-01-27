@@ -61,8 +61,7 @@ class AppRepositoryImpl @Inject constructor(
                     codeName = mapEntry.key,
                     fullName = mapEntry.value,
                     rate = rateValue,
-                    imageName = CountryImageProvider.getFileNameFromCountryCode(mapEntry.key),
-                    isImageAvailable = CountryImageProvider.doesExist(context, mapEntry.key)
+                    image = CountryImageProvider.getBitmap(context, mapEntry.key)
                 )
             }.associateBy { it.codeName }
 

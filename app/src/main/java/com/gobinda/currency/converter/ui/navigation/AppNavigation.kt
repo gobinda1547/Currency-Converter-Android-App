@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.gobinda.currency.converter.ui.screen.CurrencyListScreen
 import com.gobinda.currency.converter.ui.screen.LoadingScreen
 
 private const val ANIMATION_OFFSET = 500
@@ -38,6 +39,24 @@ fun AppNavigation() {
             }
         ) {
             LoadingScreen(navController = navController)
+        }
+
+        composable(
+            route = AppScreen.CurrencyListScreen.route,
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { -ANIMATION_OFFSET },
+                    animationSpec = tween(durationMillis = ANIMATION_DURATION)
+                ) + fadeOut(animationSpec = tween(durationMillis = ANIMATION_DURATION))
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { -ANIMATION_OFFSET },
+                    animationSpec = tween(durationMillis = ANIMATION_DURATION)
+                ) + fadeIn(animationSpec = tween(durationMillis = ANIMATION_DURATION))
+            }
+        ) {
+            CurrencyListScreen(navController = navController)
         }
     }
 }

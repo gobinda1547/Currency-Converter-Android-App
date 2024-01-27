@@ -1,5 +1,6 @@
 package com.gobinda.currency.converter.ui.screen
 
+import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
@@ -7,9 +8,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,6 +28,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.gobinda.currency.converter.R
 import com.gobinda.currency.converter.data.repository.RequestStatus
+import com.gobinda.currency.converter.ui.navigation.AppScreen
+
+private const val TAG = "LoadingScreen"
 
 @Composable
 fun LoadingScreen(
@@ -34,11 +40,20 @@ fun LoadingScreen(
 
     val requestStatus = viewModel.loadingStatus.collectAsState()
 
-    Box(modifier = Modifier.wrapContentSize()) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            PhotographicIndication(requestStatus = requestStatus.value)
-            Spacer(modifier = Modifier.height(30.dp))
-            TextIndication(requestStatus = requestStatus.value)
+    LaunchedEffect(key1 = requestStatus.value) {
+        Log.i(TAG, "LoadingScreen: invoked launched effect for ${requestStatus.value}")
+        if (requestStatus.value == RequestStatus.Successful) {
+            navController?.navigate(route = AppScreen.CurrencyListScreen.route)
+        }
+    }
+
+    Surface(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.wrapContentSize()) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                PhotographicIndication(requestStatus = requestStatus.value)
+                Spacer(modifier = Modifier.height(30.dp))
+                TextIndication(requestStatus = requestStatus.value)
+            }
         }
     }
 }

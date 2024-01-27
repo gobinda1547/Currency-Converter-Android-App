@@ -2,6 +2,6 @@
 <resources>
 
     <style name="Theme.CurrencyConverter" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:windowBackground">#FF252525</item>
+        <item name="android:windowBackground">#FF3B3B3B</item>
     </style>
 </resources>
