@@ -43,7 +43,9 @@ fun LoadingScreen(
     LaunchedEffect(key1 = requestStatus.value) {
         Log.i(TAG, "LoadingScreen: invoked launched effect for ${requestStatus.value}")
         if (requestStatus.value == RequestStatus.Successful) {
-            navController?.navigate(route = AppScreen.CurrencyListScreen.route)
+            navController?.navigate(route = AppScreen.ConverterScreen.route) {
+                popUpTo(AppScreen.LoadingScreen.route) { inclusive = true }
+            }
         }
     }
 

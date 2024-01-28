@@ -14,6 +14,7 @@ private val SingleColorScheme = lightColorScheme(
     onBackground = appTextColor100,
     surface = darkBackgroundColor100,
     onSurface = appTextColor100,
+    onSurfaceVariant = appTextColor50,
     outlineVariant = lightBackgroundColor50,
 )
 
