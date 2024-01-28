@@ -3,6 +3,7 @@ package com.gobinda.currency.converter.data.repository
 import android.content.Context
 import com.gobinda.currency.converter.R
 import com.gobinda.currency.converter.common.AppRepository
+import com.gobinda.currency.converter.data.model.ConverterOutput
 import com.gobinda.currency.converter.data.model.CurrencyInfo
 import com.gobinda.currency.converter.data.source.OpenExchangeApi
 import com.gobinda.currency.converter.imagekit.CountryImageProvider
@@ -11,7 +12,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
+import java.math.BigDecimal
+import java.math.RoundingMode
 import javax.inject.Inject
+
+private const val UP_TO_DECIMAL_PLACE = 2
+private val CALCULATION_ROUND_MODE = RoundingMode.HALF_UP
 
 class AppRepositoryImpl @Inject constructor(
     private val context: Context,
@@ -67,6 +73,30 @@ class AppRepositoryImpl @Inject constructor(
 
             _currencyInfo.emit(finalResult)
             _requestStatus.emit(RequestStatus.Successful)
+        }
+    }
+
+    override suspend fun calculateOutput(
+        inputCountry: String,
+        inputAmount: Double
+    ): List<ConverterOutput> {
+        val validCurrencyInfo = currencyInfo.value ?: return emptyList()
+        val firstDivisorInDecimal = validCurrencyInfo[inputCountry]?.let {
+            BigDecimal(it.rate.toString())
+        } ?: return emptyList()
+
+        val rawAmountInDecimal = BigDecimal(inputAmount)
+        val amountInDollar = rawAmountInDecimal.divide(
+            firstDivisorInDecimal, UP_TO_DECIMAL_PLACE, CALCULATION_ROUND_MODE
+        )
+
+        return validCurrencyInfo.entries.map {
+            val exchangeRateInDecimal = BigDecimal(it.value.rate.toString())
+            val finalResult = amountInDollar.multiply(exchangeRateInDecimal)
+            ConverterOutput(
+                currencyInfo = it.value,
+                outputAmount = finalResult.toPlainString()
+            )
         }
     }
 }

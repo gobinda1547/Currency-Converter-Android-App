@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.gobinda.currency.converter.ui.screen.CurrencyListScreen
 import com.gobinda.currency.converter.ui.screen.LoadingScreen
+import com.gobinda.currency.converter.ui.screen.converter.ConverterScreen
 
 private const val ANIMATION_OFFSET = 500
 private const val ANIMATION_DURATION = 500
@@ -31,18 +32,36 @@ fun AppNavigation() {
                     animationSpec = tween(durationMillis = ANIMATION_DURATION)
                 ) + fadeOut(animationSpec = tween(durationMillis = ANIMATION_DURATION))
             },
-            popEnterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { -ANIMATION_OFFSET },
-                    animationSpec = tween(durationMillis = ANIMATION_DURATION)
-                ) + fadeIn(animationSpec = tween(durationMillis = ANIMATION_DURATION))
-            }
         ) {
             LoadingScreen(navController = navController)
         }
 
         composable(
             route = AppScreen.CurrencyListScreen.route,
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { ANIMATION_OFFSET },
+                    animationSpec = tween(durationMillis = ANIMATION_DURATION)
+                ) + fadeIn(animationSpec = tween(durationMillis = ANIMATION_DURATION))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { ANIMATION_OFFSET },
+                    animationSpec = tween(durationMillis = ANIMATION_DURATION)
+                ) + fadeOut(animationSpec = tween(durationMillis = ANIMATION_DURATION))
+            }
+        ) {
+            CurrencyListScreen(navController = navController)
+        }
+
+        composable(
+            route = AppScreen.ConverterScreen.route,
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { ANIMATION_OFFSET },
+                    animationSpec = tween(durationMillis = ANIMATION_DURATION)
+                ) + fadeIn(animationSpec = tween(durationMillis = ANIMATION_DURATION))
+            },
             exitTransition = {
                 slideOutHorizontally(
                     targetOffsetX = { -ANIMATION_OFFSET },
@@ -56,7 +75,7 @@ fun AppNavigation() {
                 ) + fadeIn(animationSpec = tween(durationMillis = ANIMATION_DURATION))
             }
         ) {
-            CurrencyListScreen(navController = navController)
+            ConverterScreen(navController = navController)
         }
     }
 }
