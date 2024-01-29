@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,23 +37,27 @@ fun ConverterScreen(
     val inputAmount = viewModel.inputAmount.collectAsState()
     val inputCountryCode = viewModel.inputCountry.collectAsState()
 
+    LaunchedEffect(key1 = Unit) {
+        val savedState = navController.currentBackStackEntry?.savedStateHandle
+        val countryValue = savedState?.get<String>("outputCountry") ?: return@LaunchedEffect
+        viewModel.handleEvent(ConverterEvent.UpdateCountry(countryValue))
+        savedState["outputCountry"] = null
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.onBackground
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
+                    actionIconContentColor = MaterialTheme.colorScheme.onBackground
                 ),
                 title = {
                     Text(text = "Currency converter")
                 },
                 actions = {
                     IconButton(onClick = { openCurrencyListScreen(navController) }) {
-                        Icon(
-                            imageVector = Icons.Outlined.Info,
-                            contentDescription = "Currency info",
-                            tint = MaterialTheme.colorScheme.onBackground
-                        )
+                        Icon(imageVector = Icons.Outlined.Info, contentDescription = "Currencies")
                     }
                 },
             )
@@ -75,7 +80,8 @@ fun ConverterScreen(
                             viewModel.handleEvent(ConverterEvent.UpdateAmount(amount = it))
                         },
                         onCountryChangeClicked = {
-
+                            val mainRoute = AppScreen.SelectCurrencyScreen.route
+                            navController.navigate("$mainRoute/${inputCountryCode.value}")
                         }
                     )
                 }
