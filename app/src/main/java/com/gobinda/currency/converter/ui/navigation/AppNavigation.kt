@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import com.gobinda.currency.converter.ui.screen.CurrencyListScreen
 import com.gobinda.currency.converter.ui.screen.LoadingScreen
 import com.gobinda.currency.converter.ui.screen.converter.ConverterScreen
+import com.gobinda.currency.converter.ui.screen.selection.SelectCurrencyScreen
 
 private const val ANIMATION_OFFSET = 500
 private const val ANIMATION_DURATION = 500
@@ -76,6 +77,24 @@ fun AppNavigation() {
             }
         ) {
             ConverterScreen(navController = navController)
+        }
+
+        composable(
+            route = AppScreen.SelectCurrencyScreen.route + "/{inputCountry}",
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { ANIMATION_OFFSET },
+                    animationSpec = tween(durationMillis = ANIMATION_DURATION)
+                ) + fadeIn(animationSpec = tween(durationMillis = ANIMATION_DURATION))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { ANIMATION_OFFSET },
+                    animationSpec = tween(durationMillis = ANIMATION_DURATION)
+                ) + fadeOut(animationSpec = tween(durationMillis = ANIMATION_DURATION))
+            }
+        ) {
+            SelectCurrencyScreen(navController = navController)
         }
     }
 }
